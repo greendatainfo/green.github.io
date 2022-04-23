@@ -33,6 +33,8 @@ p {
 }
 .GHG2 {
   display: block;
+  max-width: 99%;
+  max-height: 99%;
   margin-left: auto;
   margin-right: auto;
 }
