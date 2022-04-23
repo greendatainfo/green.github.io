@@ -6,7 +6,9 @@ h1 {
   color: white;
   text-align: center;
 }
-
+.welcome {
+  color: DarkGreen;
+}
 p {
   font-family: verdana;
   font-size: 20px;
