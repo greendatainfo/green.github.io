@@ -31,6 +31,13 @@ p {
     max-height: 100%;
     max-width: 100%;
 }
+.GHG1.2 {
+    padding: 0;
+    display: block;
+    margin: 0 auto;
+    max-height: 100%;
+    max-width: 100%;
+}
 .GHG2 {
   display: block;
   max-width: 99%;
