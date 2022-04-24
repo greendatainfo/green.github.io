@@ -16,16 +16,24 @@
   <button onclick="document.location='wst.js'">wst</button>
   <p>Welcome to GreenDataInfo!  We're dedicated to providing the public with environmental conservation information from the public sectior in an easy-to-read format.</p>
   <div>
- var scraperjs = require('scraperjs');
-scraperjs.DynamicScraper.create('https://news.ycombinator.com/')
+var sjs = require('../../src/Scraper');
+/*
+ Scrape the news in Hacker News.
+ */
+sjs.StaticScraper
+	.create('https://news.ycombinator.com')
 	.scrape(function($) {
-		return $(".title a").map(function() {
+		return $('.title a').map(function() {
 			return $(this).text();
-		}).get();
+		}).get().filter(function(elm) {
+			return elm != 'More';
+		});
 	})
 	.then(function(news) {
-		console.log(news);
-	})
+		news.forEach(function(elm) {
+			console.log(elm);
+		});
+	});
   </div>
 </body>
   <footer>
