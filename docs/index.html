@@ -21,7 +21,7 @@ var sjs = require('../../src/Scraper');
  Scrape the news in Hacker News.
  */
 sjs.StaticScraper
-	.create('https://news.ycombinator.com')
+	.create(https://news.ycombinator.com)
 	.scrape(function($) {
 		return $('.title a').map(function() {
 			return $(this).text();
