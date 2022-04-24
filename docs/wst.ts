@@ -16,64 +16,36 @@
   <button onclick="document.location='wst.js'">wst</button>
   <p>Welcome to GreenDataInfo!  We're dedicated to providing the public with environmental conservation information from the public sectior in an easy-to-read format.</p>
   <div>
-import * as fetch from "node-fetch";
-import * as cheerio from "cheerio";
-import * as fs from "fs";
-import * as path from "path";
-import * as urlParser from "url";
-
-const seenUrls = {};
-
-const getUrl = (link, host, protocol) => {
-  if (link.includes("http")) {
-    return link;
-  } else if (link.startsWith("/")) {
-    return `${protocol}//${host}${link}`;
-  } else {
-    return `${protocol}//${host}/${link}`;
+<?php
+function crawl_page($url, $depth = 5)
+{
+  static $seen = array();
+  if (isset($seen[$url]) || $depth === 0) {
+    return;
   }
-};
 
-const crawl = async ({ url, ignore }) => {
-  if (seenUrls[url]) return;
-  console.log("crawling", url);
-  seenUrls[url] = true;
+  $seen[$url] = true;
 
-  const { host, protocol } = urlParser.parse(url);
+  $dom = new DOMDocument('1.0');
+  @$dom->loadHTMLFile($url);
 
-  const response = await fetch(url);
-  const html = await response.text();
-  const $ = cheerio.load(html);
-  const links = $("a")
-    .map((i, link) => link.attribs.href)
-    .get();
+  $anchors = $dom->getElementsByTagName('a');
+  foreach ($anchors as $element) {
+    $href = $element->getAttribute('href');
+    if (0 !== strpos($href, 'http')) {
+       /* this is where I changed hobodave's code */
+        $host = "http://".parse_url($url,PHP_URL_HOST);
+        $href = $host. '/' . ltrim($href, '/');
+    }
+    crawl_page($href, $depth - 1);
+  }
 
-  const imageUrls = $("img")
-    .map((i, link) => link.attribs.src)
-    .get();
+  echo "New Page:<br /> ";
+  echo "URL:",$url,PHP_EOL,"<br />","CONTENT:",PHP_EOL,$dom->saveHTML(),PHP_EOL,PHP_EOL,"  <br /><br />";
+}
 
-  imageUrls.forEach((imageUrl) => {
-    fetch(getUrl(imageUrl, host, protocol)).then((response) => {
-      const filename = path.basename(imageUrl);
-      const dest = fs.createWriteStream(`images/${filename}`);
-      response.body.pipe(dest);
-    });
-  });
-
-  links
-    .filter((link) => link.includes(host) && !link.includes(ignore))
-    .forEach((link) => {
-      crawl({
-        url: getUrl(link, host, protocol),
-        ignore,
-      });
-    });
-};
-
-crawl({
-  url: "http://stevescooking.blogspot.com/",
-  ignore: "/search",
-});
+crawl_page("http://foxnews.com/", 5);
+?>
   </div>
 </body>
   <footer>
