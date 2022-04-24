@@ -16,24 +16,16 @@
   <button onclick="document.location='web.php'">wst</button>
   <p>Welcome to GreenDataInfo!  We're dedicated to providing the public with environmental conservation information from the public sectior in an easy-to-read format.</p>
   <div>
-var sjs = require('../../src/Scraper');
-/*
- Scrape the news in Hacker News.
- */
-sjs.StaticScraper
-	.create(https://news.ycombinator.com)
-	.scrape(function($) {
-		return $('.title a').map(function() {
-			return $(this).text();
-		}).get().filter(function(elm) {
-			return elm != 'More';
-		});
-	})
-	.then(function(news) {
-		news.forEach(function(elm) {
-			console.log(elm);
-		});
-	});
+<?php
+require 'simple_html_dom.php';
+
+$html = file_get_html('http://www.foxnews.com/');
+$title = $html->find('title', 0);
+$image = $html->find('img', 0);
+
+echo $title->plaintext."<br>\n";
+echo $image->src;
+?>
   </div>
 </body>
   <footer>
